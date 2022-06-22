@@ -22,6 +22,7 @@ Memory Management Unit (Memory Virtualization)
    • 0th page in swap space is not used
 – Present bit is 0
 
+</br></br>
 
 • Examples
 ![image](https://user-images.githubusercontent.com/76428047/175110604-1108dc60-8207-4ae2-a647-06191e8d0aa2.png)
