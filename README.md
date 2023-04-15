@@ -1,64 +1,71 @@
-# KU_MMU
+# MMU
 Memory Management Unit (Memory Virtualization)
 
 
 ## Addressing
-• 8-bit addressing
-– Address space: 256 Bytes
-– Page size: 4 Bytes
-– PTE: 1 Byte
+**8-bit addressing**
 
+– Address space: 256 Bytes </br>
+– Page size: 4 Bytes </br>
+– PTE: 1 Byte </br>
 ![image](https://user-images.githubusercontent.com/76428047/175110308-0913cf2e-5de4-4dcd-9acd-b517bbe3175a.png)
 
 
+
 ## PTE
-• PTE
+**PTE**
 ![image](https://user-images.githubusercontent.com/76428047/175110409-e48c08f7-51c0-45be-95ca-301c0e2e978d.png)
-– Unmapped PTE is filled with zeros
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; – Unmapped PTE is filled with zeros
 
 ![image](https://user-images.githubusercontent.com/76428047/175110519-1f803c54-adde-41bc-99a2-0088b303b10f.png)
-– Swap space: 512 Bytes (=27 * 4 Bytes)
-– Offset starts from 1
-   • 0th page in swap space is not used
-– Present bit is 0
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; – Swap space: 512 Bytes (=27 * 4 Bytes) </br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; – Offset starts from 1 </br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;    &nbsp; &nbsp; • 0th page in swap space is not used </br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; – Present bit is 0
 
-</br></br>
-
-• Examples
-![image](https://user-images.githubusercontent.com/76428047/175110604-1108dc60-8207-4ae2-a647-06191e8d0aa2.png)
-• Virtual page is neither mapped nor swapped out
-![image](https://user-images.githubusercontent.com/76428047/175110675-b1ad9f70-8722-4a4b-a9fb-6a9483233ba1.png)
-• Virtual page is mapped to page frame 0 (occupied by OS)
-![image](https://user-images.githubusercontent.com/76428047/175110746-5f3618ac-c655-41a6-9c34-43f18258aaa4.png)
-• Virtual page is swapped out to 6th page in swap space
+</br>
 
 
-## ku_cpu.c
+## my_cpu.c
 • Commend
-– ku_cpu <input_file> <pmem_size> <swap_size> 
-
+```
+$ my_cpu <input_file> <pmem_size> <swap_size> 
+```
 
 ## Initialization
-• void *ku_mmu_init (unsigned int mem_size, unsigned int swap_size)
-– Resource initialization function
-  • Will be called only once at the initialization phase
-– mem_size: physical memory size in bytes
-  • allocate a memory space and manage alloc/free lists
-– Assume that page frame 0 is occupied by OS
-  • Do not consider the memory space consumed by page table and internal data structures (e.g., alloc/free lists and PCBs)
-– swap_size: swap disk size in bytes
-  • Allocate a memory space instead of real disk space
-– pmem and swap spaces are dummy; no need of actual data copies between pmem and swap spaces
-– Return value
-  • Pointer (i.e., address) to the allocated memory area that simulates the physical memory
-  • 0: fail
+**void \*my_mmu_init (unsigned int mem_size, unsigned int swap_size)** 
+</br></br>
+– mem_size: physical memory size in bytes </br>
+  &nbsp; • allocate a memory space and manage alloc/free lists </br></br>
+– swap_size: swap disk size in bytes </br>
+  &nbsp; • Allocate a memory space instead of real disk space </br>
+  &nbsp; • manage alloc/free lists </br></br>
+– Return value </br>
+  &nbsp; • Pointer (i.e., address) to the allocated memory area that simulates the physical memory </br>
+  &nbsp; • 0: fail </br></br>
+
+
+## Context Switch
+**int my_run_proc (char pid, struct my_pte \*\*my_cr3)** </br></br>
+– Performs context switch </br>
+  &nbsp; • If pid is new, the function creates a process (i.e., PCB) and its page table </br></br>
+– pid: pid of the next process </br></br>
+– my_cr3: stores the base address of the page table for the current process </br></br>
+– Return value </br>
+  &nbsp; • 0: success </br>
+  &nbsp; • -1: fail </br></br>
 
 
 
-
-
-
-
-
-
+## Page Fault Handling
+**int my_page_fault (char pid, char va)** </br></br>
+– Handling a page fault caused by demand paging or swapping </br>
+  &nbsp; • Page replacement policy: FIFO </br></br>
+– Managing swap space </br>
+  &nbsp; • Alloc/free lists </br></br>
+– pid: process id </br></br>
+– va: virtual address </br></br>
+– Return value </br>
+  &nbsp; • 0: success </br>
+  &nbsp; • -1: fail </br>
 
